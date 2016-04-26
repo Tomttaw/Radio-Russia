@@ -1,0 +1,31 @@
+# Lijst van provincies Oekranie gesorteerd op mogelijke invulcomplexiteit ,,
+# Omringd door oneven aantal provincies = prioriteit,,
+# tweede prioriteit is aantal aangrenzende provincies. Aangrenzende provincies die deze provincie als enige aangrenzing hebben tellen niet mee. ,,
+,,
+0;1;5;6;7;10;18;19,,# 7 omringende provincies
+1;0;5;7;11;12;16;17,,# 7 omringende provincies
+2;3;8;9;14;15,,# 5 omringende provincies
+3;2;4;8;13;14,,# 5 omringende provincies
+4;3;5;6;10;13;14;20,,#7
+5;0;1;4;10;12;20,,#6
+6;0;4;10;13;19;26,,#5(+1)
+7;0;1;16;18;23,,#5
+8;2;3;9;13;21,,#5
+9;2;8;15;21;22,,#5
+10;0;4;5;6,,#4
+11;1;12;17;25,,#4
+12;1;5;11;20,,#4
+133;4;6;8,,#4
+14;2;3;4;15,,#4
+15;2;9;14;22,,#4
+16;1;7;17;23,,#4
+17;1;11;16,,#3
+18;0;7;20,,#3
+19;0;6;18,,#3
+20;4;5;12;24,,#3(+1)
+21;8;9,,#2
+22;9;15,,#2
+23;7;16,,#2
+24;20,,#1
+25;11,,#1
+26;6,,#1
