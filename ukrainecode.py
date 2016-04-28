@@ -8,6 +8,7 @@ This is a temporary script file.
 
 import csv
 import random
+from collections import Counter
 
 class Province(object):
     """
@@ -42,7 +43,7 @@ with open('oekraine_priority.csv', 'rb') as csvfile:
 volgorde = [7,5,6,4,3,2,1]
 # boolean toevoegen wordt oneven omringd, wordt even omringd
 sender_list = []
-sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0, "G": 0}
+sender_count = {"A": 0, "B": 0, "C": 0, "D": 0}
 
 for i in volgorde:
     same_borders = []
@@ -55,22 +56,26 @@ for i in volgorde:
         while len(same_borders) != 0:
             random_province = random.choice(same_borders)
             same_borders.remove(random_province)
-            print "random", random_province.province_number
+            #print "random", random_province.province_number
             
-            possible_list = ["A", "B", "C", "D", "E", "F", "G"]
+            possible_list = ["A", "B", "C", "D"]
             
             for province_adjacent in random_province.adjacent:
                 #print provinces[province_adjacent].province_number, provinces[province_adjacent].sender_type
                 if provinces[province_adjacent].sender_type in possible_list:
                     possible_list.remove(provinces[province_adjacent].sender_type)
-                    #print possible_list
-            
-            
-            random_province.sender_type = possible_list[0]
+            #if not possible_list:
+                #return False
+            possible_dict = dict((k, sender_count[k]) for k in possible_list)
+            random_province.sender_type = min(possible_dict, key=possible_dict.get)
             sender_list.append(random_province.sender_type)
+            sender_count[random_province.sender_type] += 1
             print random_province.province_number, random_province.sender_type
             #print "\n"
 print sender_list
+count = Counter(sender_list)
+print count
+print sender_count
         
 problem = 0
 # check the adjacent sender types and alert if there is a problem
