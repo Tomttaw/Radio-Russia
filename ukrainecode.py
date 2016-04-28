@@ -7,6 +7,7 @@ This is a temporary script file.
 
 
 import csv
+import random
 
 class Province(object):
     """
@@ -35,22 +36,41 @@ with open('oekraine_priority.csv', 'rb') as csvfile:
             if (row[i]):
                 adjacent.append(int(row[i]))
         provinces.append(Province(int(row[0]),adjacent))
-        counter +=1        
+        counter +=1
+        
 
-for provi in provinces:
-    #print provi.province_number, "borders", provi.adjacent
-    possible_list = ["A", "B", "C", "D", "E", "F", "G"]
-    for province_adjacent in provi.adjacent:
-        #print provinces[province_adjacent].province_number, provinces[province_adjacent].sender_type
-        if provinces[province_adjacent].sender_type in possible_list:
-            possible_list.remove(provinces[province_adjacent].sender_type)
-            #print possible_list
-    provi.sender_type = possible_list[0]
-    print provi.province_number, provi.sender_type
-    #print "\n"        
-        
-    
-        
+volgorde = [7,5,6,4,3,2,1]
+# boolean toevoegen wordt oneven omringd, wordt even omringd
+sender_list = []
+sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0, "G": 0}
+
+for i in volgorde:
+    same_borders = []
+    for provi in provinces:
+        if provi.borders == i:
+            same_borders.append(provi)
+    if not same_borders:
+       continue
+    else:
+        while len(same_borders) != 0:
+            random_province = random.choice(same_borders)
+            same_borders.remove(random_province)
+            print "random", random_province.province_number
+            
+            possible_list = ["A", "B", "C", "D", "E", "F", "G"]
+            
+            for province_adjacent in random_province.adjacent:
+                #print provinces[province_adjacent].province_number, provinces[province_adjacent].sender_type
+                if provinces[province_adjacent].sender_type in possible_list:
+                    possible_list.remove(provinces[province_adjacent].sender_type)
+                    #print possible_list
+            
+            
+            random_province.sender_type = possible_list[0]
+            sender_list.append(random_province.sender_type)
+            print random_province.province_number, random_province.sender_type
+            #print "\n"
+print sender_list
         
 problem = 0
 # check the adjacent sender types and alert if there is a problem
