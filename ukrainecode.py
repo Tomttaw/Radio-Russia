@@ -26,19 +26,20 @@ class Province(object):
       
 
 provinces = []
-counter = 0
-with open('oekraine_priority.csv', 'rb') as csvfile:
-    ukrainereader = csv.reader(csvfile, delimiter = ';')
-    for row in ukrainereader:
-        #print row
-        adjacent = []
-        for i in range(len(row)-1):
-            i+=1
-            if (row[i]):
-                adjacent.append(int(row[i]))
-        provinces.append(Province(int(row[0]),adjacent))
-        counter +=1
-        
+
+def inimap(filename):
+    with open(filename, 'rb') as csvfile:
+        ukrainereader = csv.reader(csvfile, delimiter = ';')
+        for row in ukrainereader:
+            #print row
+            adjacent = []
+            for i in range(len(row)-1):
+                i+=1
+                if (row[i]):
+                    adjacent.append(int(row[i]))
+            provinces.append(Province(int(row[0]),adjacent))
+
+inimap("oekraine_priority.csv")        
 
 volgorde = [7,5,6,4,3,2,1]
 # boolean toevoegen wordt oneven omringd, wordt even omringd
