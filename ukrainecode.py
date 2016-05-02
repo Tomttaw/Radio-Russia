@@ -25,20 +25,21 @@ class Province(object):
       
 
 provinces = []
-counter = 0
-with open('oekraine_priority.csv', 'rb') as csvfile:
-    ukrainereader = csv.reader(csvfile, delimiter = ';')
-    for row in ukrainereader:
-        #print row
-        adjacent = []
-        for i in range(len(row)-1):
-            i+=1
-            if (row[i]):
-                adjacent.append(int(row[i]))
-        provinces.append(Province(int(row[0]),adjacent))
-        counter +=1
+def inimap(filename):
+    with open(filename, 'rb') as csvfile:
+        ukrainereader = csv.reader(csvfile, delimiter = ';')
+        for row in ukrainereader:
+            #print row
+            adjacent = []
+            for i in range(len(row)-1):
+                i+=1
+                if (row[i]):
+                    adjacent.append(int(row[i]))
+            provinces.append(Province(int(row[0]),adjacent))
         
+inimap('oekraine_priority.csv')
 
+#def 
 volgorde = [7,5,6,4,3,2,1]
 # boolean toevoegen wordt oneven omringd, wordt even omringd
 sender_count = {"A": 0, "B": 0, "C": 0, "D": 0}
@@ -73,16 +74,17 @@ for i in volgorde:
             sender_count[random_province.sender_type] += 1
             print random_province.province_number, random_province.sender_type
 print sender_count
-        
-problem = 0
-# check the adjacent sender types and alert if there is a problem
-for province in provinces:
-    #print province.province_number, " borders", province.borders,"Provinces:", province.adjacent, "has sender type", province.sender_type
-    for province_adjacent in province.adjacent:
-        if (provinces[province_adjacent].sender_type == province.sender_type):
-            print "problem:", province.province_number, " and ", provinces[province_adjacent].province_number, "have the same sender type"
-            problem+=1
 
-print "Problems:", problem
-       
+def check():        
+    problem = 0
+    # check the adjacent sender types and alert if there is a problem
+    for province in provinces:
+        #print province.province_number, " borders", province.borders,"Provinces:", province.adjacent, "has sender type", province.sender_type
+        for province_adjacent in province.adjacent:
+            if (provinces[province_adjacent].sender_type == province.sender_type):
+                print "problem:", province.province_number, " and ", provinces[province_adjacent].province_number, "have the same sender type"
+                problem+=1
+    if problem > 0:
+        print "Problems:", problem
+        return False
         
