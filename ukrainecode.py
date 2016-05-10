@@ -107,28 +107,31 @@ def pricecheck(pricelist):
     return price    
     
 def repeat(times):
+    lowest_price = 810
     for i in range(times):
         inirandom()
         lowest_greed()
-        prices.append(pricecheck(sender_price1))
-        del sender_list[:]
+        mapprice = pricecheck(sender_price2)
+        prices.append(mapprice)
         check()
+        if mapprice < lowest_price:
+            lowest_price = mapprice
+            count = Counter(sender_list)
+            print count
+            print sender_list
+        del sender_list[:]    
     #print prices
 
 def hillclimb():
     return False
     
 def lowest_greed():
-    provinces.reverse
     for province in provinces:
         #print province.province_number
         possible_list = getpossible(province.adjacent)
         province.sender_type = possible_list[0]
         sender_list.append(province.sender_type)
-        sender_count[province.sender_type] += 1
-    provinces.reverse     
-    
-    
+        sender_count[province.sender_type] += 1   
     
 repeat(100000)
 
