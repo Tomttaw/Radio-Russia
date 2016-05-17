@@ -122,14 +122,8 @@ for i in volgorde:
             possible_senders = getpossible(random_province.adjacent)
 
             # distribute the senders evenly
-            evendistr(sendercount, possible_senders):
-
+            random_province.sender_type = evendistr(sender_count, possible_senders)                        
             
-            # make dictionary with key = possible sender type and value is the amount of that sender already placed
-            possible_dict = dict((k, sender_count[k]) for k in possible_list)
-            
-            # add sender to province and sender dictionary
-            random_province.sender_type = min(possible_dict, key=possible_dict.get)
             sender_count[random_province.sender_type] += 1
             print random_province.province_number, random_province.sender_type
 print sender_count
