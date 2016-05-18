@@ -28,7 +28,7 @@ class Province(object):
 
 provinces = []
 
-def inimap(filename):
+def initialize_map(filename):
     with open(filename, 'rb') as csvfile:
         ukrainereader = csv.reader(csvfile, delimiter = ';')
         for row in ukrainereader:
@@ -49,8 +49,8 @@ def getpossible(provincelist):
     for adj_province in provincelist:
         if provinces[adj_province].sender_type in sender_lis1:
             sender_lis1.remove(provinces[adj_province].sender_type)
-    #if not sender_lis1:
-        #print "No sendertype possible"        
+    if not sender_lis1:
+        print "No sendertype possible"        
     return sender_lis1  
 
 """
@@ -61,21 +61,20 @@ def evendistr(sendercount, possible_senders):
     province_sender = min(possible_dict, key=possible_dict.get)
     return province_sender
 
-inimap('oekraine_priority.csv')      
+initialize_map('oekraine_priority.csv')      
 correct_solutions = 0
 false_solutions = 0
+volgorde = [7,5,6,4,3,2,1]
 
 # run the program x times
-for i in range(1000):
-    sender_list = []
-    prices = []
+for i in range(5):
     sender_count = {"A": 0, "B": 0, "C": 0, "D": 0}
     stop_loop = 0
 
-    for i in range(10,0,-1):
+    for i in volgorde:
         # stop when there are no possible solutions
         if stop_loop == 1:
-                continue
+               continue
         # make a list of the provinces with the same amount of borders
         same_borders = []
         for province in provinces:
@@ -86,6 +85,8 @@ for i in range(1000):
             continue
         # give the provinces in the same borders list a sender type. 
         else:
+            #for province in same_borders:
+                #print province.province_number
             while len(same_borders) != 0:
                 # stop when there are no possible solutions
                 if stop_loop == 1:
@@ -106,8 +107,10 @@ for i in range(1000):
                 random_province.sender_type = evendistr(sender_count, possible_senders)                        
             
                 sender_count[random_province.sender_type] += 1
+                print "end"
                 #print random_province.province_number, random_province.sender_type
-    #print "end of solution"
+    print "end of solution"
+    #print sender_count
 
 
 print false_solutions
