@@ -71,14 +71,14 @@ for i in range(5):
     sender_count = {"A": 0, "B": 0, "C": 0, "D": 0}
     stop_loop = 0
 
-    for i in volgorde:
+    for j in volgorde:
         # stop when there are no possible solutions
         if stop_loop == 1:
                continue
         # make a list of the provinces with the same amount of borders
         same_borders = []
         for province in provinces:
-            if province.amount_of_borders == i:
+            if province.amount_of_borders == j:
                 same_borders.append(province)
         # check if there are any provinces in the same_borders list
         if not same_borders: 
@@ -107,8 +107,7 @@ for i in range(5):
                 random_province.sender_type = evendistr(sender_count, possible_senders)                        
             
                 sender_count[random_province.sender_type] += 1
-                print "end"
-                #print random_province.province_number, random_province.sender_type
+                print random_province.province_number, random_province.sender_type
     print "end of solution"
     #print sender_count
 
