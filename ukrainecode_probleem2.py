@@ -40,15 +40,15 @@ def inimap(filename):
             provinces.append(Province(int(row[0]),int(row[1]),adjacent))
 
         
-inimap('china.csv')      
+inimap('russia.csv')      
 
 volgorde = [7,5,6,4,3,2,1]
 # boolean toevoegen wordt oneven omringd, wordt even omringd
 
 sender_list = []
 prices = []
-sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0, "G": 0}
-sender_price1 = {"A": 20, "B": 22, "C": 28, "D": 32, "E": 37, "F": 39, "G": 41}
+sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0, "G": 0, "H": 0}
+sender_price1 = {"A": 20, "B": 22, "C": 28, "D": 32, "E": 37, "F": 39, "G": 41, "H": 1000}
 sender_price2 = {"A": 28, "B": 30, "C": 32, "D": 33, "E": 36, "F": 37, "G": 38}
 
 """
@@ -57,15 +57,15 @@ Get list of senders possible for province
 
 def getpossible(provincelist):
     
-    #sender_lis1 = ["A", "B", "C", "D"]
     sender_lis2 = ["A", "B", "C", "D", "E", "F", "G"]
+    
     # iterate adjacent provinces and return list of possible sendertypes
     for adj_province in provincelist:
         if provinces[adj_province].sender_type in sender_lis2:
             sender_lis2.remove(provinces[adj_province].sender_type)
     if not sender_lis2:
-        print "No sendertype possible"
-        sys.exit()        
+        #print "No sendertype possible"
+        sender_lis2 = ["H"]       
     return sender_lis2  
 
 """
@@ -83,7 +83,7 @@ def check():
         # Print province.province_number, " borders", province.borders,"Provinces:", province.adjacent, "has sender type", province.sender_type
         for province_adjacent in province.adjacent:
             if (provinces[province_adjacent].sender_type == province.sender_type):
-                print "problem:", province.province_number, " and ", provinces[province_adjacent].province_number, "have the same sender type"
+                print "problem:", province.province_number, province.sender_type, " and ", provinces[province_adjacent].province_number, provinces[province_adjacent].sender_type, "have the same sender type"
                 problem+=1
     if (problem > 0):
         print "Problems:", problem
@@ -106,35 +106,46 @@ def pricecheck(pricelist):
     return price    
     
 def repeat(times):
-    lowest_price = 810
+    lowest_price = 1970
     for i in range(times):
         inirandom()
         lowest_greed()
-        mapprice = pricecheck(sender_price2)
+        mapprice = pricecheck(sender_price1)
         prices.append(mapprice)
         check()
         if mapprice < lowest_price:
             lowest_price = mapprice
             count = Counter(sender_list)
             print count
-            print sender_list
+            print sender_list, mapprice
         del sender_list[:]    
     #print prices
 
-def hillclimb():
-    return False
-    
+def hillclimb(iterations):
+    for _ in range(iterations):
+        mapprice = pricecheck(sender_price1)
+        random_province = random.choice(provinces)
+        old_sender = random_province.sender_type 
+        new_sender = random.choice(getpossible(random_province.adjacent))
+        random_province.sender_type = new_sender
+        newprice = pricecheck(sender_price1)
+        if newprice >mapprice:
+            random_province.sender_type = old_sender        
+        
 def lowest_greed():
     for province in provinces:
         #print province.province_number
         possible_list = getpossible(province.adjacent)
         province.sender_type = possible_list[0]
+    for province in provinces:
+        possible_list = getpossible(province.adjacent)
+        province.sender_type = possible_list[0]        
         sender_list.append(province.sender_type)
         sender_count[province.sender_type] += 1   
-    
-#repeat(100000)
+        
+repeat(100000)
 
-#print min(prices), max(prices)      
+print min(prices), max(prices)      
         
 
 
