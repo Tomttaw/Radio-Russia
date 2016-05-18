@@ -45,7 +45,7 @@ Get list of senders possible for province
 def getpossible(provincelist):
     
     sender_lis1 = ["A", "B", "C", "D"]
-    # iterate adjacent provinces and return list of possible sendertypes
+    # iterate over adjacent provinces and return list of possible sendertypes
     for adj_province in provincelist:
         if provinces[adj_province].sender_type in sender_lis1:
             sender_lis1.remove(provinces[adj_province].sender_type)
@@ -61,12 +61,11 @@ def evendistr(sendercount, possible_senders):
     province_sender = min(possible_dict, key=possible_dict.get)
     return province_sender
 
-
-
 inimap('oekraine_priority.csv')      
 correct_solutions = 0
 false_solutions = 0
 
+# run the program x times
 for i in range(1000):
     sender_list = []
     prices = []
@@ -82,6 +81,7 @@ for i in range(1000):
         for province in provinces:
             if province.amount_of_borders == i:
                 same_borders.append(province)
+        # check if there are any provinces in the same_borders list
         if not same_borders: 
             continue
         # give the provinces in the same borders list a sender type. 
@@ -90,7 +90,8 @@ for i in range(1000):
                 # stop when there are no possible solutions
                 if stop_loop == 1:
                     break
-                #pick a random province from the list
+
+                #pick a random province from the same borders list
                 random_province = random.choice(same_borders)
                 same_borders.remove(random_province)
 
