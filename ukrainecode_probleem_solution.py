@@ -8,8 +8,6 @@ This is a temporary script file.
 
 import csv
 import random
-import sys
-from collections import Counter
 
 class Province(object):
     """
@@ -50,7 +48,7 @@ def getpossible(provincelist):
         if provinces[adj_province].sender_type in sender_lis1:
             sender_lis1.remove(provinces[adj_province].sender_type)
     if not sender_lis1:
-        print "No sendertype possible"
+        #print "No sendertype possible"
         sender_lis1 = ["E"]
     return sender_lis1  
 
@@ -65,12 +63,15 @@ def evendistribute(sendercount, possible_senders):
 initialize_map('oekraine_priority.csv')      
 correct_solutions = 0
 false_solutions = 0
-volgorde = [7,5,6,4,3,2,1]
+
+provinces.reverse()
+for province in provinces:
+    print province.province_number
 
 # run the program x times
 for i in range(100):
     sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0}
-
+    sender_list = []
     for j in range(10,0,-1):
         # make a list of the provinces with the same amount of borders
         same_borders = []
@@ -90,19 +91,21 @@ for i in range(100):
 
                 # get the possible sender types
                 possible_senders = getpossible(random_province.adjacent)
-                print possible_senders
+                #print possible_senders
                     
                 # distribute the senders evenly
                 random_province.sender_type = evendistribute(sender_count, possible_senders)                        
-            
+                sender_list.append(random_province.sender_type)
                 sender_count[random_province.sender_type] += 1
-                print random_province.province_number, random_province.sender_type
+                #print random_province.province_number, random_province.sender_type
     for province in provinces:
         province.sender_type = None
-    if sender_count["E"] > 0:
+    if (sender_count["E"] > 0 and
+        sender_count[""]):
         false_solutions += 1
-    print "end of solution"
+    #print "end of solution"
     print sender_count
+    print sender_list
     
 
 print false_solutions
