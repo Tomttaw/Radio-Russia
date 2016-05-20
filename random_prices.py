@@ -39,7 +39,7 @@ def inimap(filename):
             provinces.append(Province(int(row[0]),int(row[1]),adjacent))
 
         
-inimap('russia.csv')      
+inimap('usa.csv')      
 
 
 sender_list = []
@@ -103,7 +103,7 @@ def repeat(times):
 
 repeat(10000)
 
-with open("random_sample_russia.csv", "wb") as resultsfile:
+with open("random_sample_usa.csv", "wb") as resultsfile:
     wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
     wr.writerow(prices)
 print min(prices), max(prices)      
