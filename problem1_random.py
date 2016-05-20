@@ -28,7 +28,7 @@ provinces = []
 
 def initialize_map(filename):
     with open(filename, 'rb') as csvfile:
-        ukrainereader = csv.reader(csvfile, delimiter = ';')
+        ukrainereader = csv.reader(csvfile, delimiter = ',')
         for row in ukrainereader:
             adjacent = []
             for i in range(len(row)):
@@ -73,7 +73,7 @@ def check():
         print "Problems:", problem
     
 
-initialize_map('oekraine_priority.csv')
+initialize_map('russia.csv')
 correct_minimum = (len(provinces) - len(provinces)%4)/4
 false_solutions = 0
 
@@ -82,17 +82,7 @@ false_solutions = 0
 for i in range(10000):
     sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0}
     sender_list = []
-    #for j in range(-1, 10,1):
-        # make a list of the provinces with the same amount of borders
-        #same_borders = []
-        #for province in provinces:
-            #if province.amount_of_borders == j:
-                #same_borders.append(province)
-        # check if there are any provinces in the same_borders list
-        #if not same_borders: 
-            #continue
-        # give the provinces in the same borders list a sender type. 
-        #else:
+
     temporary_provinces = list(provinces)
     while len(temporary_provinces) != 0:
         
@@ -109,7 +99,6 @@ for i in range(10000):
         sender_list.append(random_province.sender_type)
         sender_count[random_province.sender_type] += 1
         #print random_province.province_number, random_province.sender_type
-    check()
     for province in provinces:
         province.sender_type = None
     if (sender_count["E"] > 0 or
