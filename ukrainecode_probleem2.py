@@ -8,7 +8,6 @@ This is a temporary script file.
 
 import csv
 import random
-import sys
 from collections import Counter
 
 class Province(object):
