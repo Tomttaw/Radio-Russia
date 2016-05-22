@@ -8,7 +8,6 @@ This is a temporary script file.
 
 import csv
 import random
-import sys
 from collections import Counter
 
 class Province(object):
@@ -34,7 +33,7 @@ def inimap(filename):
         ukrainereader = csv.reader(csvfile, delimiter = ',')
         for row in ukrainereader:
             adjacent = []
-            for i in range(len(row)-1):
+            for i in range(len(row)):
                 if (i>1) and (row[i]):
                     adjacent.append(int(row[i]))
             provinces.append(Province(int(row[0]),int(row[1]),adjacent))
@@ -42,8 +41,6 @@ def inimap(filename):
         
 inimap('russia.csv')      
 
-volgorde = [7,5,6,4,3,2,1]
-# boolean toevoegen wordt oneven omringd, wordt even omringd
 
 sender_list = []
 prices = []
@@ -99,29 +96,32 @@ def inirandom():
 
 def pricecheck(pricelist):
     price = 0
-    count = Counter(sender_list)
+    current_senders = []
+    for province in provinces:
+        current_senders.append(province.sender_type)
+    count = Counter(current_senders)
     for key, value in count.iteritems():
         price += value * pricelist[key]  
     #print count, price
     return price    
     
 def repeat(times):
-    lowest_price = 1970
+    #lowest_price = 1970
     for i in range(times):
         inirandom()
-        lowest_greed()
+        classic_hillclimber(5000)
         mapprice = pricecheck(sender_price1)
         prices.append(mapprice)
         check()
-        if mapprice < lowest_price:
-            lowest_price = mapprice
-            count = Counter(sender_list)
-            print count
-            print sender_list, mapprice
+        #if mapprice < lowest_price:
+            #lowest_price = mapprice
+            #count = Counter(sender_list)
+            #print count
+            #print sender_list, mapprice
         del sender_list[:]    
     #print prices
 
-def hillclimb(iterations):
+def classic_hillclimber(iterations):
     for _ in range(iterations):
         mapprice = pricecheck(sender_price1)
         random_province = random.choice(provinces)
@@ -129,10 +129,10 @@ def hillclimb(iterations):
         new_sender = random.choice(getpossible(random_province.adjacent))
         random_province.sender_type = new_sender
         newprice = pricecheck(sender_price1)
-        if newprice >mapprice:
+        if (newprice > mapprice):
             random_province.sender_type = old_sender        
         
-def lowest_greed():
+def lowest_hillclimber():
     for province in provinces:
         #print province.province_number
         possible_list = getpossible(province.adjacent)
@@ -143,59 +143,9 @@ def lowest_greed():
         sender_list.append(province.sender_type)
         sender_count[province.sender_type] += 1   
         
-repeat(100000)
+repeat(10000)
 
-print min(prices), max(prices)      
-        
-
-
-
-def repeat2(times):
-    for j in range(times):
-        sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0, "G": 0}
-        for i in volgorde:
-            same_borders = []
-            for provi in provinces:
-                if provi.amount_of_borders == i:
-                    same_borders.append(provi)
-            if not same_borders:
-               continue
-            else:
-                while len(same_borders) != 0:
-                    random_province = random.choice(same_borders)
-                    same_borders.remove(random_province)
-                    #print "random", random_province.province_number
-        
-                    # give possible list to choose sender type from
-                    possible_list = ["A", "B", "C", "D"]
-                    
-                    # remove sender types from possible list if adjacent province has that sender type
-                    for province_adjacent in random_province.adjacent:
-                        if provinces[province_adjacent].sender_type in possible_list:
-                            possible_list.remove(provinces[province_adjacent].sender_type)
-                    if not possible_list:
-                        possible_list = ["E"]
-                    
-                    # make dictionary with key = possible sender type and value is the amount of that sender already placed
-                    possible_dict = dict((k, sender_count[k]) for k in possible_list)
-                    
-                    # add sender to province and sender dictionary
-                    random_province.sender_type = min(possible_dict, key=possible_dict.get)
-                    sender_count[random_province.sender_type] += 1
-                    #print random_province.province_number, random_province.sender_type
-        if sender_count['E'] == 0:
-            print sender_count
-
-#repeat2(100)
-
-            
-            
-            
-
-            
-#print sender_list
-#print count
-#print sender_count        
-
-
-        
+with open("classic_hillclimber_russia.csv", "wb") as resultsfile:
+    wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
+    wr.writerow(prices)
+print min(prices), max(prices)    
