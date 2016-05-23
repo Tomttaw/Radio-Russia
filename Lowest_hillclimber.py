@@ -98,6 +98,9 @@ def pricecheck(pricelist):
     count = Counter(current_senders)
     for key, value in count.iteritems():
         price += value * pricelist[key]  
+    if (price < 1962):
+        print price, count
+        print current_senders
     return price    
     
 def repeat(times):
