@@ -9,18 +9,19 @@ This is a temporary script file.
 import csv
 import random
 from collections import Counter
+from bs4 import BeautifulSoup
 
 class Province(object):
     """
     A Province represents a province of Ukraine
     """
 
-    def __init__(self, province_number, uneven, adjacent,):
+    def __init__(self, province_number, path_id, adjacent,):
         """
         Initializes a province with a random zender-type
         """
         self.province_number = province_number
-        self.uneven = uneven
+        self.path_id = path_id
         self.adjacent = adjacent
         self.amount_of_borders = len(adjacent)
         self.sender_type = None     
@@ -37,10 +38,10 @@ def inimap(filename):
             for i in range(len(row)):
                 if (i>1) and (row[i]):
                     adjacent.append(int(row[i]))
-            provinces.append(Province(int(row[0]),int(row[1]),adjacent))
+            provinces.append(Province(int(row[0]),row[1],adjacent))
     return provinces        
 
-provinces = inimap('russia.csv')             
+provinces = inimap('russia_ids.csv')             
 
 sender_list = []
 prices = []
@@ -86,8 +87,51 @@ def check():
 def inirandom():
     for province in random.sample(provinces, len(provinces)):
         possible_list = getpossible(province.adjacent)
-        province.sender_type = random.choice(possible_list)              
-
+        province.sender_type = random.choice(possible_list)    
+        
+    
+def visualize(province_list):
+    province_colors = {}
+    for province in province_list:
+        #print province.path_id
+        province_colors[province.path_id] = province.sender_type
+    #print province_colors
+    svg =open('russia.svg', 'r').read()    
+    soup = BeautifulSoup(svg, selfClosingTags=['defs','sodipodi:namedview'])          
+    paths = soup.findAll('path') 
+    
+    style='font-size:12px;fill-rule:nonzero;stroke:#FFFFFF;stroke-opacity:1;'+\
+        'stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;'+\
+        'stroke-linecap:butt;marker-start:none;stroke-linejoin:bevel;fill:'
+    colors = ["#c6dbef","#9ecae1","#6baed6","#4292c6", "#2171b5", "#08519c", "#08306b"]
+    
+    for p in paths:
+        try:
+            sender = province_colors[p['id']]
+        except:
+            continue
+        
+        if sender == 'A':
+            colorclass = 0
+        elif sender == 'B':
+            colorclass = 1
+        elif sender == 'C':
+            colorclass = 2
+        elif sender == 'D':
+            colorclass = 3
+        elif sender == 'E':
+            colorclass = 4    
+        elif sender == 'F':
+            colorclass = 5
+        elif sender == 'G':
+            colorclass = 6
+        
+        color = colors[colorclass]
+        p['style'] = style + color
+    with open("output.html", "wb") as chart:
+        chart.write(soup.prettify())
+    #print soup.prettify()
+        
 def pricecheck(pricelist):
     price = 0
     current_senders = []
@@ -100,30 +144,39 @@ def pricecheck(pricelist):
         print price, count
         print current_senders
     return price    
-    
+
+def oilspread():
+    stack = []
+    while len(stack) < 83:
+        start = random.choice(provinces)
+        stack.append(start)
+                
+        
 def repeat(times):
-    #lowest_price = 1970
+    lowest_price = 1970
+    lowest_setup = []
     for i in range(times):
         inirandom()
         lowest_hillclimber()
         mapprice = pricecheck(sender_price1)
         prices.append(mapprice)
         check()
-        #if mapprice < lowest_price:
-            #lowest_price = mapprice
-            #count = Counter(sender_list)
-            #print count
-            #print sender_list, mapprice
+        if mapprice < lowest_price:
+            lowest_price = mapprice
+            lowest_setup = list(provinces)            
         del sender_list[:]            
-        
+    visualize(lowest_setup)
+    
 def lowest_hillclimber():
+        
     for _ in range(2):
         for province in provinces:
             possible_list = getpossible(province.adjacent)
             province.sender_type = possible_list[0]
     
         
-repeat(10000000)
+repeat(100000)
+
 """
 with open("classic_hillclimber_russia.csv", "wb") as resultsfile:
     wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
