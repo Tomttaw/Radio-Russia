@@ -93,9 +93,8 @@ def inirandom():
 def visualize(province_list):
     province_colors = {}
     for province in province_list:
-        #print province.path_id
         province_colors[province.path_id] = province.sender_type
-    #print province_colors
+        
     svg =open('russia.svg', 'r').read()    
     soup = BeautifulSoup(svg, selfClosingTags=['defs','sodipodi:namedview'])          
     paths = soup.findAll('path') 
@@ -130,7 +129,6 @@ def visualize(province_list):
         p['style'] = style + color
     with open("output.html", "wb") as chart:
         chart.write(soup.prettify())
-    #print soup.prettify()
         
 def pricecheck(pricelist):
     price = 0
@@ -149,7 +147,8 @@ def oilspread():
     stack = []
     while len(stack) < 83:
         start = random.choice(provinces)
-        stack.append(start)
+        stack.append(start.province.province_number)
+        
                 
         
 def repeat(times):
@@ -173,9 +172,8 @@ def lowest_hillclimber():
         for province in provinces:
             possible_list = getpossible(province.adjacent)
             province.sender_type = possible_list[0]
-    
-        
-repeat(100000)
+           
+repeat(10000)
 
 """
 with open("classic_hillclimber_russia.csv", "wb") as resultsfile:

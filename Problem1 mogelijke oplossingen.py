@@ -28,7 +28,7 @@ provinces = []
 
 def initialize_map(filename):
     with open(filename, 'rb') as csvfile:
-        ukrainereader = csv.reader(csvfile, delimiter = ';')
+        ukrainereader = csv.reader(csvfile, delimiter = ',')
         for row in ukrainereader:
             adjacent = []
             for i in range(len(row)):
@@ -73,7 +73,7 @@ def check():
         print "Problems:", problem
     
 
-initialize_map('oekraine_priority.csv')
+initialize_map('russia.csv')
 correct_minimum = (len(provinces) - len(provinces)%4)/4
 false_solutions = 0
 
@@ -82,36 +82,32 @@ false_solutions = 0
 for i in range(10000):
     sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0}
     sender_list = []
-    #for j in range(-1, 10,1):
-        # make a list of the provinces with the same amount of borders
-        #same_borders = []
-        #for province in provinces:
-            #if province.amount_of_borders == j:
-                #same_borders.append(province)
+    for j in range(10, -1 ,-1):
+        #make a list of the provinces with the same amount of borders
+        same_borders = []
+        for province in provinces:
+            if province.amount_of_borders == j:
+                same_borders.append(province)
         # check if there are any provinces in the same_borders list
-        #if not same_borders: 
-            #continue
+        if not same_borders: 
+            continue
         # give the provinces in the same borders list a sender type. 
-        #else:
-    temporary_provinces = list(provinces)
-    while len(temporary_provinces) != 0:
-        
-        #pick a random province from the same borders list
-        random_province = random.choice(temporary_provinces)
-        temporary_provinces.remove(random_province)
-        #print random_province.province_number
-        # get the possible sender types
-        possible_senders = getpossible(random_province.adjacent)
-        #print possible_senders
-            
-        # distribute the senders evenly
-        random_province.sender_type = evendistribute(sender_count, possible_senders)                        
-        sender_list.append(random_province.sender_type)
-        sender_count[random_province.sender_type] += 1
-        #print random_province.province_number, random_province.sender_type
-    check()
-    for province in provinces:
-        province.sender_type = None
+        else:
+    
+            while len(same_borders) != 0:
+                
+                #pick a random province from the same borders list
+                random_province = random.choice(same_borders)
+                same_borders.remove(random_province)
+                #print random_province.province_number
+                # get the possible sender types
+                possible_senders = getpossible(random_province.adjacent)
+                #print possible_senders
+                    
+                # distribute the senders evenly
+                random_province.sender_type = evendistribute(sender_count, possible_senders)                        
+                sender_list.append(random_province.sender_type)
+                sender_count[random_province.sender_type] += 1
     if (sender_count["E"] > 0 or
         sender_count["A"] < correct_minimum or
         sender_count["B"] < correct_minimum or
@@ -119,11 +115,19 @@ for i in range(10000):
         sender_count["D"] < correct_minimum):
         false_solutions += 1
         #print sender_count
+    else:
+        correct_list = []
+        for province in provinces:
+            correct_list.append(province.sender_type)
+        
+        #print sender_count
+    for province in provinces:
+        province.sender_type = None    
     #print "end of solution"
     #print sender_count
     #print sender_list
-correct_solutions = 10000 - false_solutions 
+correct_solutions = 10 - false_solutions 
 print false_solutions, correct_solutions
-
+print correct_list
 
         
