@@ -40,7 +40,7 @@ def inimap(filename):
             provinces.append(Province(int(row[0]),int(row[1]),adjacent))
     return provinces        
 
-provinces = inimap('russia.csv')             
+provinces = inimap('russia.csv')
 
 sender_list = []
 prices = []

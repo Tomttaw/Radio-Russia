@@ -143,11 +143,29 @@ def pricecheck(pricelist):
         print current_senders
     return price    
 
-def oilspread():
-    stack = []
-    while len(stack) < 83:
-        start = random.choice(provinces)
-        stack.append(start.province.province_number)
+stack = []
+def spread(province):
+    for adjacent in province.adjacent:
+        if provinces[adjacent] not in stack:
+            possible_list = getpossible(provinces[adjacent].adjacent)
+            provinces[adjacent].sender_type = possible_list[0]
+            stack.append(provinces[adjacent])
+
+def oilspread(): 
+        
+    for _ in range(3):
+        del stack[:]
+        start = random.randint(0,82)
+        if (start == 0 or start == 72 or start == 14):
+            start += 1
+        startprovince = provinces[start]    
+        stack.append(startprovince)
+        stack.append(provinces[72])
+        stack.append(provinces[0])
+        stack.append(provinces[14])
+        for i in range(len(provinces)):
+            spread(stack[i])
+        
         
                 
         
@@ -156,14 +174,14 @@ def repeat(times):
     lowest_setup = []
     for i in range(times):
         inirandom()
-        lowest_hillclimber()
+        oilspread()
         mapprice = pricecheck(sender_price1)
         prices.append(mapprice)
         check()
         if mapprice < lowest_price:
             lowest_price = mapprice
             lowest_setup = list(provinces)            
-        del sender_list[:]            
+        del sender_list[:]           
     visualize(lowest_setup)
     
 def lowest_hillclimber():
@@ -173,7 +191,7 @@ def lowest_hillclimber():
             possible_list = getpossible(province.adjacent)
             province.sender_type = possible_list[0]
            
-repeat(10000)
+repeat(100000)
 
 """
 with open("classic_hillclimber_russia.csv", "wb") as resultsfile:

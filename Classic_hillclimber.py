@@ -9,6 +9,7 @@ This is a temporary script file.
 import csv
 import random
 from collections import Counter
+import time
 
 class Province(object):
     """
@@ -25,6 +26,7 @@ class Province(object):
         self.amount_of_borders = len(adjacent)
         self.sender_type = None     
       
+start_time = time.time()
 
 provinces = []
 
@@ -104,7 +106,7 @@ def repeat(times):
     for i in range(times):
         inirandom()
         classic_hillclimber(5000)
-        mapprice = pricecheck(sender_price1)
+        mapprice = pricecheck(sender_price2)
         prices.append(mapprice)
         check()
         #if mapprice < lowest_price:
@@ -128,9 +130,11 @@ def classic_hillclimber(iterations):
         
 repeat(10000)
 
+
 """
-with open("classic_hillclimber_russia.csv", "wb") as resultsfile:
+with open("classic_hillclimber_russia_prices2.csv", "wb") as resultsfile:
     wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
     wr.writerow(prices)
 """    
-print min(prices), max(prices)    
+print min(prices), max(prices) 
+print (time.time()-start_time), "seconds"   
