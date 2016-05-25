@@ -41,10 +41,31 @@ def inimap(filename):
             provinces.append(Province(int(row[0]),row[1],adjacent))
     return provinces        
 
-provinces = inimap('russia_ids.csv')             
-partial_map = [provinces[57], provinces[67], provinces[73], provinces[75], 
+provinces = inimap('russia_ids.csv')   
+partial_map2 = [provinces[43], provinces[52], provinces[53], provinces[54], 
+               provinces[60], provinces[61], provinces[62], provinces[63], 
+               provinces[64], provinces[65], provinces[70], provinces[71], 
+               provinces[72], provinces[77]]
+               
+partial_map3 = [provinces[57], provinces[67], provinces[73], provinces[75], 
                provinces[74], provinces[76], provinces[78], provinces[79], 
                provinces[80], provinces[81], provinces[82], provinces[69], provinces[68]]
+               
+partial_map4 = [provinces[40], provinces[26], provinces[27], provinces[41], 
+               provinces[42], provinces[49], provinces[50], provinces[51], 
+               provinces[58], provinces[59]]
+               
+partial_map = [provinces[1], provinces[2], provinces[3], provinces[4], 
+               provinces[5], provinces[6], provinces[7], provinces[8], 
+               provinces[9], provinces[10], provinces[11], provinces[12], 
+               provinces[13], provinces[15], provinces[16], provinces[66],
+               provinces[17], provinces[18], provinces[19], provinces[20], 
+               provinces[21], provinces[22], provinces[23], provinces[24], 
+               provinces[25], provinces[28], provinces[29], provinces[30], 
+               provinces[31], provinces[32], provinces[33], provinces[34], 
+               provinces[35], provinces[36], provinces[37], provinces[38], 
+               provinces[39], provinces[44], provinces[45], provinces[46], 
+               provinces[47], provinces[48], provinces[55], provinces[56]]
 
 sender_list = []
 prices = []
@@ -88,15 +109,26 @@ def check():
         print "Problems:", problem
 
 def inirandom():
-    for province in random.sample(partial_map, len(partial_map)):
+    for province in random.sample(provinces, len(provinces)):
         possible_list = getpossible(province.adjacent)
         province.sender_type = random.choice(possible_list)    
         
     
 def visualize(province_list):
+    low_list = ['A', 'A', 'B', 'A', 'C', 'A', 'B', 'C', 'A', 'B',
+                       'A', 'B', 'C', 'B', 'A', 'B', 'D', 'B', 'D', 'A',
+                       'A', 'C', 'A', 'D', 'A', 'A', 'D', 'A', 'A', 'C',
+                       'A', 'B', 'C', 'B', 'A', 'B', 'B', 'A', 'C', 'B',
+                       'C', 'B', 'A', 'C', 'B', 'C', 'A', 'D', 'C', 'C',
+                       'B', 'A', 'B', 'D', 'A', 'D', 'B', 'C', 'A', 'C',
+                       'A', 'B', 'C', 'B', 'C', 'B', 'A', 'A', 'B', 'A',
+                       'A', 'A', 'A', 'B', 'C', 'A', 'A', 'A', 'B', 'A',
+                       'C', 'B', 'A']    
     province_colors = {}
+    i = 0
     for province in province_list:
-        province_colors[province.path_id] = province.sender_type
+        province_colors[province.path_id] = low_list[i]
+        i += 1
         
     svg =open('russia.svg', 'r').read()    
     soup = BeautifulSoup(svg, selfClosingTags=['defs','sodipodi:namedview'])          
@@ -130,20 +162,30 @@ def visualize(province_list):
         
         color = colors[colorclass]
         p['style'] = style + color
-    with open("output.html", "wb") as chart:
+    with open("Rusland_1942.html", "wb") as chart:
         chart.write(soup.prettify())
         
 def pricecheck(pricelist):
     price = 0
-    current_senders = []
-    for province in partial_map:
-        current_senders.append(province.sender_type)
+    #current_senders = []
+    current_senders = ['A', 'A', 'B', 'A', 'C', 'A', 'B', 'C', 'A', 'B',
+                       'A', 'B', 'C', 'B', 'A', 'B', 'D', 'B', 'D', 'A',
+                       'A', 'C', 'A', 'D', 'A', 'A', 'D', 'A', 'A', 'C',
+                       'A', 'B', 'C', 'B', 'A', 'B', 'B', 'A', 'C', 'B',
+                       'C', 'B', 'A', 'C', 'B', 'C', 'A', 'D', 'C', 'C',
+                       'B', 'A', 'B', 'D', 'A', 'D', 'B', 'C', 'A', 'C',
+                       'A', 'B', 'C', 'B', 'C', 'B', 'A', 'A', 'B', 'A',
+                       'A', 'A', 'A', 'B', 'C', 'A', 'A', 'A', 'B', 'A',
+                       'C', 'B', 'A']
+    #for province in partial_map:
+        #current_senders.append(province.sender_type)
     count = Counter(current_senders)
     for key, value in count.iteritems():
         price += value * pricelist[key]  
-    if (price < 306):
+    if (price < 1051):
         print price, count
-        print current_senders
+        print provinces[12].sender_type, provinces[13].sender_type, provinces[25].sender_type, provinces[39].sender_type,
+        print current_senders   
     return price    
 
 stack = []
@@ -158,23 +200,22 @@ def oilspread():
         
     for _ in range(3):
         del stack[:]
-        start = random.randint(0,82)
+        start = 46
         if (start == 0 or start == 72 or start == 14):
             start += 1
         startprovince = provinces[start]    
         stack.append(startprovince)
-        stack.append(provinces[72])
-        stack.append(provinces[0])
-        stack.append(provinces[14])
-        for i in range(len(provinces)):
+        #stack.append(provinces[72])
+        #stack.append(provinces[0])
+        #stack.append(provinces[14])
+        for i in range(len(partial_map)):
             spread(stack[i])     
         
 def repeat(times):
-    lowest_price = 1970
-    lowest_setup = []
+    lowest_price = 2600
     for i in range(times):
         inirandom()
-        lowest_hillclimber
+        oilspread()
         mapprice = pricecheck(sender_price1)
         prices.append(mapprice)
         check()
@@ -182,21 +223,24 @@ def repeat(times):
             lowest_price = mapprice
             lowest_setup = list(provinces)            
         del sender_list[:]           
-    #visualize(lowest_setup)
+    visualize(lowest_setup)
     
 def lowest_hillclimber():
-        
     for _ in range(3):
-        for province in partial_map:
-            possible_list = getpossible(province.adjacent)
-            province.sender_type = possible_list[0]
-           
-repeat(1000000)
-
+        for j in range(-1, 10 , 1):
+        #make a list of the provinces with the same amount of borders
+            for province in provinces:
+                if province.amount_of_borders == j:
+                    possible_list = getpossible(province.adjacent)
+                    province.sender_type = possible_list[0]
+         
+#repeat(100000)
+visualize(provinces)
+print pricecheck(sender_price1)
 """
 with open("classic_hillclimber_russia.csv", "wb") as resultsfile:
     wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
     wr.writerow(prices)
 """
-avgprice = sum(prices, 0.0)/len(prices)
-print min(prices), max(prices), avgprice    
+#avgprice = sum(prices, 0.0)/len(prices)
+#print min(prices), max(prices), avgprice    
