@@ -42,9 +42,6 @@ def inimap(filename):
     return provinces        
 
 provinces = inimap('russia_ids.csv')             
-partial_map = [provinces[57], provinces[67], provinces[73], provinces[75], 
-               provinces[74], provinces[76], provinces[78], provinces[79], 
-               provinces[80], provinces[81], provinces[82], provinces[69], provinces[68]]
 
 sender_list = []
 prices = []
@@ -88,12 +85,12 @@ def check():
         print "Problems:", problem
 
 def inirandom():
-    for province in random.sample(partial_map, len(partial_map)):
+    for province in random.sample(provinces, len(provinces)):
         possible_list = getpossible(province.adjacent)
         province.sender_type = random.choice(possible_list)    
         
     
-def visualize(province_list):
+def visualize(province_list, number):
     province_colors = {}
     for province in province_list:
         province_colors[province.path_id] = province.sender_type
@@ -105,7 +102,7 @@ def visualize(province_list):
     style='font-size:12px;fill-rule:nonzero;stroke:#FFFFFF;stroke-opacity:1;'+\
         'stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;'+\
         'stroke-linecap:butt;marker-start:none;stroke-linejoin:bevel;fill:'
-    colors = ["#c6dbef","#9ecae1","#6baed6","#4292c6", "#2171b5", "#08519c", "#08306b"]
+    colors = ["#c6dbef","#6baed6","#2171b5","#08306b", "#00004d", "#00001a", "#000000"]
     
     for p in paths:
         try:
@@ -130,13 +127,17 @@ def visualize(province_list):
         
         color = colors[colorclass]
         p['style'] = style + color
-    with open("output.html", "wb") as chart:
-        chart.write(soup.prettify())
+    if number == 1:    
+        with open("voor_hillclimber.html", "wb") as chart:
+            chart.write(soup.prettify())
+    elif number == 2:
+        with open("na_hillclimber.html", "wb") as chart:
+            chart.write(soup.prettify())
         
 def pricecheck(pricelist):
     price = 0
     current_senders = []
-    for province in partial_map:
+    for province in provinces:
         current_senders.append(province.sender_type)
     count = Counter(current_senders)
     for key, value in count.iteritems():
@@ -174,7 +175,11 @@ def repeat(times):
     lowest_setup = []
     for i in range(times):
         inirandom()
-        lowest_hillclimber
+        print pricecheck(sender_price1)
+        visualize(provinces, 1)
+        lowest_hillclimber()
+        visualize(provinces, 2)
+        print pricecheck(sender_price1)
         mapprice = pricecheck(sender_price1)
         prices.append(mapprice)
         check()
@@ -185,13 +190,12 @@ def repeat(times):
     #visualize(lowest_setup)
     
 def lowest_hillclimber():
-        
     for _ in range(3):
-        for province in partial_map:
+        for province in provinces:
             possible_list = getpossible(province.adjacent)
             province.sender_type = possible_list[0]
            
-repeat(1000000)
+repeat(1)
 
 """
 with open("classic_hillclimber_russia.csv", "wb") as resultsfile:

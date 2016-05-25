@@ -41,7 +41,7 @@ def inimap(filename):
             provinces.append(Province(int(row[0]),int(row[1]),adjacent))
 
         
-inimap('russia.csv')      
+inimap('usa.csv')      
 
 
 sender_list = []
@@ -131,10 +131,10 @@ def classic_hillclimber(iterations):
 repeat(10000)
 
 
-"""
-with open("classic_hillclimber_russia_prices2.csv", "wb") as resultsfile:
+
+with open("classic_hillclimber_usa_prices2.csv", "wb") as resultsfile:
     wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
     wr.writerow(prices)
-"""    
+    
 print min(prices), max(prices) 
 print (time.time()-start_time), "seconds"   
