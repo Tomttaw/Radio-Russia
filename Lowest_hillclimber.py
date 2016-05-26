@@ -9,6 +9,7 @@ This is a temporary script file.
 import csv
 import random
 from collections import Counter
+import time
 
 class Province(object):
     """
@@ -39,7 +40,7 @@ def inimap(filename):
                     adjacent.append(int(row[i]))
             provinces.append(Province(int(row[0]),int(row[1]),adjacent))
     return provinces        
-
+start_time = time.time()
 provinces = inimap('russia.csv')
 
 sender_list = []
@@ -123,7 +124,7 @@ def lowest_hillclimber():
             province.sender_type = possible_list[0]
     
         
-repeat(10000000)
+repeat(100000)
 """
 with open("classic_hillclimber_russia.csv", "wb") as resultsfile:
     wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
@@ -131,3 +132,4 @@ with open("classic_hillclimber_russia.csv", "wb") as resultsfile:
 """
 avgprice = sum(prices, 0.0)/len(prices)
 print min(prices), max(prices), avgprice    
+print (time.time()-start_time)
