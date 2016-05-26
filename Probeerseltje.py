@@ -116,10 +116,10 @@ def inirandom():
     
 def visualize(province_list):
     low_list = ['A', 'A', 'B', 'A', 'C', 'A', 'B', 'C', 'A', 'B',
-                       'A', 'B', 'C', 'B', 'A', 'B', 'D', 'B', 'D', 'A',
+                       'A', 'B', 'C', 'B', 'A', 'B', 'D', 'B', 'C', 'A',
                        'A', 'C', 'A', 'D', 'A', 'A', 'D', 'A', 'A', 'C',
-                       'A', 'B', 'C', 'B', 'A', 'B', 'B', 'A', 'C', 'B',
-                       'C', 'B', 'A', 'C', 'B', 'C', 'A', 'D', 'C', 'C',
+                       'A', 'B', 'D', 'B', 'A', 'B', 'B', 'A', 'C', 'B',
+                       'C', 'B', 'A', 'C', 'B', 'C', 'A', 'C', 'D', 'C',
                        'B', 'A', 'B', 'D', 'A', 'D', 'B', 'C', 'A', 'C',
                        'A', 'B', 'C', 'B', 'C', 'B', 'A', 'A', 'B', 'A',
                        'A', 'A', 'A', 'B', 'C', 'A', 'A', 'A', 'B', 'A',
@@ -137,7 +137,7 @@ def visualize(province_list):
     style='font-size:12px;fill-rule:nonzero;stroke:#FFFFFF;stroke-opacity:1;'+\
         'stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;'+\
         'stroke-linecap:butt;marker-start:none;stroke-linejoin:bevel;fill:'
-    colors = ["#c6dbef","#9ecae1","#6baed6","#4292c6", "#2171b5", "#08519c", "#08306b"]
+    colors = ["#c6dbef","#6baed6","#2171b5","#08306b", "#00004d", "#00001a", "#000000"]
     
     for p in paths:
         try:
@@ -162,17 +162,17 @@ def visualize(province_list):
         
         color = colors[colorclass]
         p['style'] = style + color
-    with open("Rusland_1942.html", "wb") as chart:
+    with open("Rusland_1936.html", "wb") as chart:
         chart.write(soup.prettify())
         
 def pricecheck(pricelist):
     price = 0
     #current_senders = []
     current_senders = ['A', 'A', 'B', 'A', 'C', 'A', 'B', 'C', 'A', 'B',
-                       'A', 'B', 'C', 'B', 'A', 'B', 'D', 'B', 'D', 'A',
+                       'A', 'B', 'C', 'B', 'A', 'B', 'D', 'B', 'C', 'A',
                        'A', 'C', 'A', 'D', 'A', 'A', 'D', 'A', 'A', 'C',
-                       'A', 'B', 'C', 'B', 'A', 'B', 'B', 'A', 'C', 'B',
-                       'C', 'B', 'A', 'C', 'B', 'C', 'A', 'D', 'C', 'C',
+                       'A', 'B', 'D', 'B', 'A', 'B', 'B', 'A', 'C', 'B',
+                       'C', 'B', 'A', 'C', 'B', 'C', 'A', 'C', 'D', 'C',
                        'B', 'A', 'B', 'D', 'A', 'D', 'B', 'C', 'A', 'C',
                        'A', 'B', 'C', 'B', 'C', 'B', 'A', 'A', 'B', 'A',
                        'A', 'A', 'A', 'B', 'C', 'A', 'A', 'A', 'B', 'A',
