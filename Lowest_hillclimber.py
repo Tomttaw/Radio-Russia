@@ -39,14 +39,15 @@ def inimap(filename):
                 if (i>1) and (row[i]):
                     adjacent.append(int(row[i]))
             provinces.append(Province(int(row[0]),int(row[1]),adjacent))
-    return provinces        
+    return provinces
+        
 start_time = time.time()
 provinces = inimap('russia.csv')
 
 sender_list = []
 prices = []
-sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0, "G": 0, "H": 0}
-sender_price1 = {"A": 20, "B": 22, "C": 28, "D": 32, "E": 37, "F": 39, "G": 41, "H": 1000}
+sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0, "G": 0}
+sender_price1 = {"A": 20, "B": 22, "C": 28, "D": 32, "E": 37, "F": 39, "G": 41}
 sender_price2 = {"A": 28, "B": 30, "C": 32, "D": 33, "E": 36, "F": 37, "G": 38}
 
 """
@@ -55,31 +56,25 @@ Get list of senders possible for province
 
 def getpossible(provincelist):
     
-    sender_lis2 = ["A", "B", "C", "D", "E", "F", "G"]
+    sender_list = ["A", "B", "C", "D", "E", "F", "G"]
     
     # iterate adjacent provinces and return list of possible sendertypes
     for adj_province in provincelist:
-        if provinces[adj_province].sender_type in sender_lis2:
-            sender_lis2.remove(provinces[adj_province].sender_type)
-    if not sender_lis2:
-        #print "No sendertype possible"
-        sender_lis2 = ["H"]       
-    return sender_lis2  
+        if provinces[adj_province].sender_type in sender_list:
+            sender_list.remove(provinces[adj_province].sender_type)
+    #return False when no sendertype is possible         
+    if not sender_list:
+        return False       
+    return sender_list 
 
 """
-Distribute four sendertypes evenly over all provinces
+Check the sender types for all provinces and alert if there is a conflict
 """
-def evendistr(sendercount, possible_senders):
-    possible_dict = dict((k, sendercount[k]) for k in possible_senders)
-    province_sender = min(possible_dict, key=possible_dict.get)
-    return province_sender      
-
-# Check the adjacent sender types and alert if there is a problem
 def check():
     problem = 0    
     for province in provinces:
-        # Print province.province_number, " borders", province.borders,"Provinces:", province.adjacent, "has sender type", province.sender_type
         if (province.sender_type in province.adjacent):
+                print province.sender_type, province.adjacent                
                 problem+=1
     if (problem > 0):
         print "Problems:", problem
@@ -97,34 +92,38 @@ def pricecheck(pricelist):
     count = Counter(current_senders)
     for key, value in count.iteritems():
         price += value * pricelist[key]  
-    if (price < 1955):
-        print price, count
-        print current_senders
-    return price    
+    return price, current_senders    
     
 def repeat(times):
-    #lowest_price = 1970
+    lowest_price = 3403
     for i in range(times):
         inirandom()
         lowest_hillclimber()
-        mapprice = pricecheck(sender_price1)
+        mapprice, sender_list = pricecheck(sender_price1)
         prices.append(mapprice)
         check()
-        #if mapprice < lowest_price:
-            #lowest_price = mapprice
-            #count = Counter(sender_list)
-            #print count
-            #print sender_list, mapprice
+        if mapprice < lowest_price:
+            lowest_price = mapprice
+            count = Counter(sender_list)
+            print count
+            print mapprice, sender_list, "\n"
         del sender_list[:]            
         
 def lowest_hillclimber():
-    for _ in range(2):
-        for province in provinces:
-            possible_list = getpossible(province.adjacent)
-            province.sender_type = possible_list[0]
+    old_price = pricecheck(sender_price1)
+    for province in provinces:
+        possible_list = getpossible(province.adjacent)
+        if possible_list == False:
+            continue
+        province.sender_type = possible_list[0]
+    new_price = pricecheck(sender_price1)
+    if new_price < old_price:
+        lowest_hillclimber()    
+    
     
         
-repeat(100000)
+repeat(10000)
+
 """
 with open("classic_hillclimber_russia.csv", "wb") as resultsfile:
     wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)

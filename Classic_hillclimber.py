@@ -39,13 +39,9 @@ def inimap(filename):
                 if (i>1) and (row[i]):
                     adjacent.append(int(row[i]))
             provinces.append(Province(int(row[0]),int(row[1]),adjacent))
-
+    return provinces
         
-<<<<<<< HEAD
 inimap('china.csv')      
-=======
-inimap('usa.csv')      
->>>>>>> origin/master
 
 
 sender_list = []
@@ -135,17 +131,11 @@ def classic_hillclimber(iterations):
 repeat(10000)
 
 
-
-<<<<<<< HEAD
+"""
 with open("classic_hillclimber_china_prices2.csv", "wb") as resultsfile:
     wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
     wr.writerow(prices)
-   
-=======
-with open("classic_hillclimber_usa_prices2.csv", "wb") as resultsfile:
-    wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
-    wr.writerow(prices)
-    
->>>>>>> origin/master
+"""
+
 print min(prices), max(prices) 
 print (time.time()-start_time), "seconds"   
