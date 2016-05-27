@@ -2,7 +2,7 @@
 """
 Spyder Editor
 
-Implementation of Lowest Choice algorithm team Rusland
+This is a temporary script file.
 """
 
 
@@ -107,6 +107,24 @@ def pricecheck(pricelist):
     return price, current_senders    
 
 """
+Iterate over provinces and give each province the lowest valid sender type
+possible until there are no moves left in order of the csv
+"""        
+def lowest_hillclimber_csv_order():
+    #calculate old price
+    old_price = pricecheck(sender_price1)
+    #give each province the cheapest sender type possible
+    for province in provinces:
+        possible_list = getpossible(province.adjacent)
+        if possible_list == False:
+            continue
+        province.sender_type = possible_list[0]
+    #check whether the price of the map has been lowered, if so repeat the algorithm    
+    new_price = pricecheck(sender_price1)
+    if new_price < old_price:
+        lowest_hillclimber()  
+
+"""
 Add adjacent provinces to stack and give them the lowest possible sender type
 """
 def spread(province, stack):
@@ -133,7 +151,7 @@ def lowest_hillclimber(province_list):
     valid_list.remove(72)
     
     #choose from list randomly, or pick manually by entering the province number
-    start = random.choice(valid_list)
+    start = 
     startprovince = provinces[start]    
     stack.append(startprovince)
     
