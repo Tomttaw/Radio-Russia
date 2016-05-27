@@ -124,23 +124,19 @@ def spread(province, stack):
 Iterate over provinces and give each province the lowest valid sender type
 possible until there are no moves left
 """        
-def lowest_hillclimber(province_list):    
+def lowest_hillclimber(province_list, lonely_provinces):    
     stack = []
-    #make a valid list to choose from randomly
-    valid_list = range(82)
-    valid_list.remove(0)
-    valid_list.remove(14)
-    valid_list.remove(72)
+    
+    #remove standalone provinces from valid list and append them to the stack
+    valid_list = range(len(provinces))
+    for i in lonely_provinces:
+        valid_list.remove(i)
+        stack.append(provinces[i])
     
     #choose from list randomly, or pick manually by entering the province number
     start = random.choice(valid_list)
     startprovince = provinces[start]    
     stack.append(startprovince)
-    
-    #append provinces without adjacent provinces    
-    stack.append(provinces[72])
-    stack.append(provinces[0])
-    stack.append(provinces[14])
     
     # calculate old price and iterate over map using spread()
     old_price = pricecheck(sender_price1)
@@ -148,19 +144,31 @@ def lowest_hillclimber(province_list):
         spread(stack[i], stack)     
     new_price = pricecheck(sender_price1)
     if new_price < old_price:
-        lowest_hillclimber(provinces)
+        lowest_hillclimber(provinces, lonely_provinces)
+
+"""
+Make a list of provinces than have no adjacent provinces
+"""
+
+def standalone_provinces():
+    lone_list = []
+    for province in provinces:
+        if province.amount_of_borders == 0:
+            lone_list.append(province.province_number)
+    return lone_list        
 
 """
 Try the algorithm n times and print a solution if the price is the lowest
 found so far
 """    
 def repeat(times):
+    lonely_provinces = standalone_provinces()
     #maximum price possible for this map with price scheme 1
     lowest_price = 3403
     for i in range(times):
         #initialize map randomly and run lowest hillclimber algorithm
         inirandom()
-        lowest_hillclimber(provinces)
+        lowest_hillclimber(provinces, lonely_provinces)
         # get price of the map and the corresponding list of senders
         mapprice, sender_list = pricecheck(sender_price1)
         prices.append(mapprice)
@@ -173,7 +181,7 @@ def repeat(times):
             print mapprice, sender_list, "\n"
                     
         
-repeat(10000)
+repeat(1)
 
 """
 with open("classic_hillclimber_russia.csv", "wb") as resultsfile:
