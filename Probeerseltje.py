@@ -41,36 +41,40 @@ def inimap(filename):
             provinces.append(Province(int(row[0]),row[1],adjacent))
     return provinces        
 
+#make list of provinces
 provinces = inimap('russia_ids.csv')   
-partial_map2 = [provinces[43], provinces[52], provinces[53], provinces[54], 
-               provinces[60], provinces[61], provinces[62], provinces[63], 
-               provinces[64], provinces[65], provinces[70], provinces[71], 
-               provinces[72], provinces[77]]
+
+#define maps in smaller parts 
+east = [provinces[43], provinces[52], provinces[53], provinces[54], 
+        provinces[60], provinces[61], provinces[62], provinces[63], 
+        provinces[64], provinces[65], provinces[70], provinces[71], 
+        provinces[72], provinces[77]]
                
-partial_map3 = [provinces[57], provinces[67], provinces[73], provinces[75], 
-               provinces[74], provinces[76], provinces[78], provinces[79], 
-               provinces[80], provinces[81], provinces[82], provinces[69], provinces[68]]
+southwest = [provinces[57], provinces[67], provinces[73], provinces[75], 
+              provinces[74], provinces[76], provinces[78], provinces[79], 
+              provinces[80], provinces[81], provinces[82], provinces[69],
+              provinces[68]]
                
-partial_map4 = [provinces[40], provinces[26], provinces[27], provinces[41], 
-               provinces[42], provinces[49], provinces[50], provinces[51], 
-               provinces[58], provinces[59]]
+eastcenter = [provinces[40], provinces[26], provinces[27], provinces[41], 
+                provinces[42], provinces[49], provinces[50], provinces[51], 
+                provinces[58], provinces[59]]
                
-partial_map = [provinces[1], provinces[2], provinces[3], provinces[4], 
-               provinces[5], provinces[6], provinces[7], provinces[8], 
-               provinces[9], provinces[10], provinces[11], provinces[12], 
-               provinces[13], provinces[15], provinces[16], provinces[66],
-               provinces[17], provinces[18], provinces[19], provinces[20], 
-               provinces[21], provinces[22], provinces[23], provinces[24], 
-               provinces[25], provinces[28], provinces[29], provinces[30], 
-               provinces[31], provinces[32], provinces[33], provinces[34], 
-               provinces[35], provinces[36], provinces[37], provinces[38], 
-               provinces[39], provinces[44], provinces[45], provinces[46], 
-               provinces[47], provinces[48], provinces[55], provinces[56]]
+westcenter = [provinces[1], provinces[2], provinces[3], provinces[4], 
+              provinces[5], provinces[6], provinces[7], provinces[8], 
+              provinces[9], provinces[10], provinces[11], provinces[12], 
+              provinces[13], provinces[15], provinces[16], provinces[66],
+              provinces[17], provinces[18], provinces[19], provinces[20], 
+              provinces[21], provinces[22], provinces[23], provinces[24], 
+              provinces[25], provinces[28], provinces[29], provinces[30], 
+              provinces[31], provinces[32], provinces[33], provinces[34], 
+              provinces[35], provinces[36], provinces[37], provinces[38], 
+              provinces[39], provinces[44], provinces[45], provinces[46], 
+              provinces[47], provinces[48], provinces[55], provinces[56]]
 
 sender_list = []
 prices = []
 sender_count = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0, "G": 0, "H": 0}
-sender_price1 = {"A": 20, "B": 22, "C": 28, "D": 32, "E": 37, "F": 39, "G": 41, "H": 1000}
+sender_price1 = {"A": 20, "B": 22, "C": 28, "D": 32, "E": 37, "F": 39, "G": 41}
 sender_price2 = {"A": 28, "B": 30, "C": 32, "D": 33, "E": 36, "F": 37, "G": 38}
 
 """
@@ -79,16 +83,16 @@ Get list of senders possible for province
 
 def getpossible(provincelist):
     
-    sender_lis2 = ["A", "B", "C", "D", "E", "F", "G"]
+    sender_list = ["A", "B", "C", "D", "E", "F", "G"]
     
     # iterate adjacent provinces and return list of possible sendertypes
     for adj_province in provincelist:
-        if provinces[adj_province].sender_type in sender_lis2:
-            sender_lis2.remove(provinces[adj_province].sender_type)
-    if not sender_lis2:
-        #print "No sendertype possible"
-        sender_lis2 = ["H"]       
-    return sender_lis2  
+        if provinces[adj_province].sender_type in sender_list:
+            sender_list.remove(provinces[adj_province].sender_type)
+    #return False when no sendertype is possible         
+    if not sender_list:
+        return False       
+    return sender_list 
 
 """
 Distribute four sendertypes evenly over all provinces
@@ -98,37 +102,37 @@ def evendistr(sendercount, possible_senders):
     province_sender = min(possible_dict, key=possible_dict.get)
     return province_sender      
 
-# Check the adjacent sender types and alert if there is a problem
+"""
+Check the sender types for all provinces and alert if there is a conflict
+"""
 def check():
+    #check for every province if there is a conflict
     problem = 0    
     for province in provinces:
-        # Print province.province_number, " borders", province.borders,"Provinces:", province.adjacent, "has sender type", province.sender_type
         if (province.sender_type in province.adjacent):
+                print province.sender_type, province.adjacent                
                 problem+=1
     if (problem > 0):
         print "Problems:", problem
 
+"""
+Give all provinces a random valid sender type
+"""
 def inirandom():
+    #get the possible sender types for each province and pick one randomly
     for province in random.sample(provinces, len(provinces)):
         possible_list = getpossible(province.adjacent)
-        province.sender_type = random.choice(possible_list)    
+        province.sender_type = random.choice(possible_list)     
         
-    
+
+"""
+Make an svg map with the provinces colored by sendertype
+"""    
 def visualize(province_list):
-    low_list = ['A', 'A', 'B', 'A', 'C', 'A', 'B', 'C', 'A', 'B',
-                       'A', 'B', 'C', 'B', 'A', 'B', 'D', 'B', 'C', 'A',
-                       'A', 'C', 'A', 'D', 'A', 'A', 'D', 'A', 'A', 'C',
-                       'A', 'B', 'D', 'B', 'A', 'B', 'B', 'A', 'C', 'B',
-                       'C', 'B', 'A', 'C', 'B', 'C', 'A', 'C', 'D', 'C',
-                       'B', 'A', 'B', 'D', 'A', 'D', 'B', 'C', 'A', 'C',
-                       'A', 'B', 'C', 'B', 'C', 'B', 'A', 'A', 'B', 'A',
-                       'A', 'A', 'A', 'B', 'C', 'A', 'A', 'A', 'B', 'A',
-                       'C', 'B', 'A']    
+  
     province_colors = {}
-    i = 0
     for province in province_list:
-        province_colors[province.path_id] = low_list[i]
-        i += 1
+        province_colors[province.path_id] = province.sender_type
         
     svg =open('russia.svg', 'r').read()    
     soup = BeautifulSoup(svg, selfClosingTags=['defs','sodipodi:namedview'])          
@@ -162,67 +166,60 @@ def visualize(province_list):
         
         color = colors[colorclass]
         p['style'] = style + color
-    with open("Rusland_1936.html", "wb") as chart:
+    with open("divide_output.html", "wb") as chart:
         chart.write(soup.prettify())
         
 def pricecheck(pricelist):
     price = 0
-    #current_senders = []
-    current_senders = ['A', 'A', 'B', 'A', 'C', 'A', 'B', 'C', 'A', 'B',
-                       'A', 'B', 'C', 'B', 'A', 'B', 'D', 'B', 'C', 'A',
-                       'A', 'C', 'A', 'D', 'A', 'A', 'D', 'A', 'A', 'C',
-                       'A', 'B', 'D', 'B', 'A', 'B', 'B', 'A', 'C', 'B',
-                       'C', 'B', 'A', 'C', 'B', 'C', 'A', 'C', 'D', 'C',
-                       'B', 'A', 'B', 'D', 'A', 'D', 'B', 'C', 'A', 'C',
-                       'A', 'B', 'C', 'B', 'C', 'B', 'A', 'A', 'B', 'A',
-                       'A', 'A', 'A', 'B', 'C', 'A', 'A', 'A', 'B', 'A',
-                       'C', 'B', 'A']
-    #for province in partial_map:
-        #current_senders.append(province.sender_type)
+    current_senders = []
+    # make a list of the sendertypes in the map
+    for province in provinces:
+        current_senders.append(province.sender_type)
+    # calculate price of the map based on the given price scheme    
     count = Counter(current_senders)
     for key, value in count.iteritems():
         price += value * pricelist[key]  
-    if (price < 1051):
-        print price, count
-        print provinces[12].sender_type, provinces[13].sender_type, provinces[25].sender_type, provinces[39].sender_type,
-        print current_senders   
-    return price    
+    return price, current_senders     
 
-stack = []
-def spread(province):
+def spread(province, stack):
     for adjacent in province.adjacent:
         if provinces[adjacent] not in stack:
             possible_list = getpossible(provinces[adjacent].adjacent)
             provinces[adjacent].sender_type = possible_list[0]
             stack.append(provinces[adjacent])
 
-def oilspread(): 
-        
-    for _ in range(3):
-        del stack[:]
-        start = 46
-        if (start == 0 or start == 72 or start == 14):
-            start += 1
-        startprovince = provinces[start]    
-        stack.append(startprovince)
-        #stack.append(provinces[72])
-        #stack.append(provinces[0])
-        #stack.append(provinces[14])
-        for i in range(len(partial_map)):
-            spread(stack[i])     
+def oilspread(province_list):    
+    stack = []
+    #make a valid list to choose from randomly
+    valid_list = range(82)
+    valid_list.remove(0)
+    valid_list.remove(14)
+    valid_list.remove(72)
+    
+    #choose from list randomly, or pick manually by entering the province number
+    start = random.choice(valid_list)
+    startprovince = provinces[start]    
+    stack.append(startprovince)
+    
+    #append provinces without adjacent provinces    
+    stack.append(provinces[72])
+    stack.append(provinces[0])
+    stack.append(provinces[14])
+    for i in range(len(province_list)):
+        spread(stack[i], stack)     
         
 def repeat(times):
-    lowest_price = 2600
+    lowest_setup = []    
+    lowest_price = 3403
     for i in range(times):
         inirandom()
-        oilspread()
-        mapprice = pricecheck(sender_price1)
+        oilspread(provinces)
+        mapprice, sender_list = pricecheck(sender_price1)
         prices.append(mapprice)
         check()
         if mapprice < lowest_price:
             lowest_price = mapprice
             lowest_setup = list(provinces)            
-        del sender_list[:]           
     visualize(lowest_setup)
     
 def lowest_hillclimber():
@@ -234,13 +231,12 @@ def lowest_hillclimber():
                     possible_list = getpossible(province.adjacent)
                     province.sender_type = possible_list[0]
          
-#repeat(100000)
-visualize(provinces)
-print pricecheck(sender_price1)
+repeat(1000)
+
 """
 with open("classic_hillclimber_russia.csv", "wb") as resultsfile:
     wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
     wr.writerow(prices)
 """
-#avgprice = sum(prices, 0.0)/len(prices)
-#print min(prices), max(prices), avgprice    
+avgprice = sum(prices, 0.0)/len(prices)
+print min(prices), max(prices), avgprice    
