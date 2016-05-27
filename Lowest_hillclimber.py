@@ -148,7 +148,7 @@ def lowest_hillclimber(province_list):
         spread(stack[i], stack)     
     new_price = pricecheck(sender_price1)
     if new_price < old_price:
-        lowest_hillclimber
+        lowest_hillclimber(provinces)
 
 """
 Try the algorithm n times and print a solution if the price is the lowest

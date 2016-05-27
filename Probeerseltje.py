@@ -182,13 +182,21 @@ def pricecheck(pricelist):
     return price, current_senders     
 
 def spread(province, stack):
+    
+    # check all adjacent provinces
     for adjacent in province.adjacent:
+        # if a province has not been iterated yet add it to the stack and give
+        # the lowest sender type possible
         if provinces[adjacent] not in stack:
             possible_list = getpossible(provinces[adjacent].adjacent)
             provinces[adjacent].sender_type = possible_list[0]
             stack.append(provinces[adjacent])
 
-def oilspread(province_list):    
+"""
+Iterate over provinces and give each province the lowest valid sender type
+possible until there are no moves left
+"""        
+def lowest_hillclimber(province_list):    
     stack = []
     #make a valid list to choose from randomly
     valid_list = range(82)
@@ -197,7 +205,7 @@ def oilspread(province_list):
     valid_list.remove(72)
     
     #choose from list randomly, or pick manually by entering the province number
-    start = random.choice(valid_list)
+    start = 22
     startprovince = provinces[start]    
     stack.append(startprovince)
     
@@ -205,15 +213,21 @@ def oilspread(province_list):
     stack.append(provinces[72])
     stack.append(provinces[0])
     stack.append(provinces[14])
+    
+    # calculate old price and iterate over map using spread()
+    old_price = pricecheck(sender_price1)
     for i in range(len(province_list)):
         spread(stack[i], stack)     
+    new_price = pricecheck(sender_price1)
+    if new_price < old_price:
+        lowest_hillclimber(provinces)
         
 def repeat(times):
     lowest_setup = []    
     lowest_price = 3403
     for i in range(times):
         inirandom()
-        oilspread(provinces)
+        lowest_hillclimber(provinces)
         mapprice, sender_list = pricecheck(sender_price1)
         prices.append(mapprice)
         check()
@@ -222,7 +236,7 @@ def repeat(times):
             lowest_setup = list(provinces)            
     visualize(lowest_setup)
     
-def lowest_hillclimber():
+def lowest_hillclimber2():
     for _ in range(3):
         for j in range(-1, 10 , 1):
         #make a list of the provinces with the same amount of borders
